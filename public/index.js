@@ -1,6 +1,41 @@
 let transactions = [];
 let myChart;
 
+let db
+
+const request = indexedDB.open('transaction', 1)
+
+const checkDatabase =() => {
+  const transaction = db.objectStore('transactions')
+  const store = transaction.objectStore('transactions')
+
+  const getAll = store.getAll()
+
+  getAll.onsuccess = () => {
+    if (getAll.result.forEach(element => {
+      console.log(element)
+      fetch('/api/transaction', {
+        method: "post",
+        body: json.stringify(element.data),
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json"
+        }
+      })
+
+      .then(() => {
+        const transact =db.transaction(['transactions'], 'readwrite');
+        const store = transact.objectStore('transactions');
+        store.clear()
+      })
+      .catch(e => console.error(e))
+
+    }))
+  } 
+}
+
+
+
 fetch("/api/transaction")
   .then(response => {
     return response.json();
