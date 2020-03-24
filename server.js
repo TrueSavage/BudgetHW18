@@ -1,4 +1,4 @@
-require('dotenv').config()
+
 const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
@@ -16,10 +16,15 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost/budget", {
+const newLocal = mongoose.connect(process.env.MONGODB_URI || process.env.LOCAL_URI, {
   useNewUrlParser: true,
   useFindAndModify: false
 });
+
+// const newLocal_1 = mongoose.connect("mongodb://localhost/budget", {
+//   useNewUrlParser: true,
+//   useFindAndModify: false
+// });
 
 // routes
 app.use(require("./routes/api.js"));
