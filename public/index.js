@@ -30,8 +30,33 @@ const checkDatabase =() => {
       })
       .catch(e => console.error(e))
 
-    }))
+    })
+
   } 
+ }
+}
+
+const saveRecord = data => {
+  const transaction = db.transaction(['transactions'], 'readwrite')
+  const store = transaction.objectStore('transactions')
+  store.add({ data })
+
+}
+
+
+request.onupgradeneeded = event => {
+  const db = event.target.result
+
+  db.createObjectStore('transactions', { autoIncrement: true })
+}
+
+
+request.onsuccess = event => {
+  db = event.target.result
+
+  if (navigator.onLine) {
+    checkDatabase
+  }
 }
 
 
